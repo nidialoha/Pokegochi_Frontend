@@ -37,7 +37,11 @@ const Loading = () => {
         {/* Inhalt */}
         <div className="relative z-10 flex flex-col items-center justify-center h-full px-4">
           {/* Logo */}
-          <img src="/Logo.png" alt="Logo" className="w-40 h-40 mb-8" />
+          <img
+            src="/Logo.png"
+            alt="Logo"
+            className="w-40 h-40 mb-8 animate-bounce"
+          />
 
           {/* Ladebalken */}
           <div className="w-full max-w-md h-4 bg-gray-200 rounded-full overflow-hidden shadow-inner">

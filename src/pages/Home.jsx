@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import XPBar from "../components/XPBar";
+import HealthBar from "../components/HealthBar";
+import FeedMenu from "../components/FeedMenu";
+import SwitchPokemonMenu from "../components/switchPokemon";
+import { CgPokemon } from "react-icons/cg";
+import { GiForkKnifeSpoon } from "react-icons/gi";
 
 function Home() {
+  const [currentHealth, setCurrentHealth] = useState(30); // Beispiel
+  const maxHealth = 150;
+
+  const [showFeedMenu, setShowFeedMenu] = useState(false);
+  const [showSwitchMenu, setShowSwitchMenu] = useState(false);
   return (
     <>
       <div className="fixed inset-0 z-0">
@@ -15,11 +25,42 @@ function Home() {
           icon="/Strom.svg" // dein eigenes Bild
         />
       </div>
-      {/* <img
-        src="PokemonRoom.png"
-        alt="pokemon-room-picture"
-        className="h-full w-full absolute sm:absolute object-cover md:absolute object-right"
-      /> */}
+
+      <div className="flex flex-col items-center">
+        {/* HealthBar über dem Pokémon */}
+        <div className="mt-4 w-40 flex justify-center z-20">
+          <HealthBar currentHealth={currentHealth} maxHealth={maxHealth} />
+        </div>
+      </div>
+
+      <div className="">
+        {/* Buttons unten */}
+        <div className="fixed bottom-20 flex justify-between mb-8 mx-20 gap-4 z-40">
+          {/* Fütterungs-Button */}
+          <button
+            onClick={() => setShowFeedMenu(true)}
+            className="w-15 h-15 bg-white rounded-full shadow-md flex items-center justify-center cursor-pointer"
+          >
+            <GiForkKnifeSpoon className="size-8" />
+          </button>
+
+          {/* Wechsel-Button */}
+          <button
+            onClick={() => setShowSwitchMenu(true)}
+            className="w-15 h-15 bg-white rounded-full shadow-md flex items-center justify-center cursor-pointer"
+          >
+            <CgPokemon className="size-8" />
+          </button>
+        </div>
+
+        {/* Menü für Füttern */}
+        {showFeedMenu && <FeedMenu onClose={() => setShowFeedMenu(false)} />}
+
+        {/* Menü für Wechseln */}
+        {showSwitchMenu && (
+          <SwitchPokemonMenu onClose={() => setShowSwitchMenu(false)} />
+        )}
+      </div>
     </>
   );
 }

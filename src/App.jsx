@@ -10,6 +10,7 @@ import Center from "./pages/Center";
 import Loading from "./components/Loading";
 import NotFound from "./pages/NotFound";
 import Card from "./components/Card";
+import HallOfFame from "./pages/HallOfFame";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="loading" element={<Loading />} />
         <Route path="card" element={<Card />} />
+        <Route path="hall-of-fame" element={<HallOfFame />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>
