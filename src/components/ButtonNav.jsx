@@ -7,7 +7,7 @@ import { IoTrophyOutline } from "react-icons/io5";
 function ButtonNav() {
   return (
     <>
-      <div className="dock dock-xl container mx-auto grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 gap-3">
+      <div className="fixed z-50 dock dock-xl container mx-auto grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 gap-3">
         <button className="hover:bg-green-700 hover:text-white hover:w-full h-full align-middle gap-2">
           <NavLink to="/" className="text-xs">
             {" "}

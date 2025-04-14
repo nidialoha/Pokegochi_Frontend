@@ -7,6 +7,9 @@ import Login from "./pages/Login";
 import Battle from "./pages/Battle";
 import Dashboard from "./pages/Dashboard";
 import Center from "./pages/Center";
+import Loading from "./components/Loading";
+import NotFound from "./pages/NotFound";
+import Card from "./components/Card";
 
 function App() {
   return (
@@ -19,6 +22,10 @@ function App() {
         <Route path="battle" element={<Battle />} />
         <Route path="center" element={<Center />} />
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="loading" element={<Loading />} />
+        <Route path="card" element={<Card />} />
+
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

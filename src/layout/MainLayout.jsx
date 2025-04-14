@@ -4,8 +4,8 @@ import ButtonNav from "../components/ButtonNav";
 function MainLayout() {
   return (
     <div>
-      <Outlet />
       <ButtonNav />
+      <Outlet />
     </div>
   );
 }
