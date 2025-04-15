@@ -9,20 +9,11 @@ function Battle() {
   const [loading, setLoading] = useState(true);
   const [cancelled, setCancelled] = useState(false);
   const [enemyPokemon, setEnemyPokemon] = useState({});
-  const { primaryPokemon, user, setUser, setPrimaryPokemon } = useAuth();
+  const { primaryPokemon, user, setUser, setPrimaryPokemon, saveUser, savePokemon } = useAuth();
   const [battleMessage, setBattleMessage] = useState("");
   const handleCancel = () => setCancelled(true);
   const handleFinish = () => setLoading(false);
   const navigate = useNavigate();
-
-  const levelUp = (pokemon) => {
-    pokemon.level += 1;
-    pokemon.health += 2;
-    pokemon.defenseValue += 2;
-    pokemon.attackValue += 2;
-
-    return pokemon;
-  };
 
   useEffect(() => {
     const fetchEnemy = async () => {
@@ -60,7 +51,7 @@ function Battle() {
     let defenseValue = enemyPokemon.defenseValue * Math.random();
     let damage = primaryPokemon.attackValue - defenseValue;
     if (damage <= 0) damage = 1;
-    setBattleMessage(
+    await setBattleMessage(
       "My Pokemon attacks with " +
         primaryPokemon.attack +
         " and causes " +
@@ -69,12 +60,12 @@ function Battle() {
     );
     let currentHealth = Math.floor(enemyPokemon.currentHealth - damage);
     if (currentHealth < 0) currentHealth = 0;
-    setEnemyPokemon((prev) => ({
+    await setEnemyPokemon((prev) => ({
       ...prev,
       currentHealth,
     }));
     if (currentHealth == 0) {
-      handleEndOfBattle();
+      handleEndOfBattle("enemy");
       return;
     }
 
@@ -99,7 +90,7 @@ function Battle() {
         currentHealth,
       }));
       if (currentHealth == 0) {
-        handleEndOfBattle();
+        handleEndOfBattle("my");
         return;
       }
 
@@ -107,31 +98,50 @@ function Battle() {
     }, 2000);
   };
 
-  const handleEndOfBattle = async () => {
+  const handleEndOfBattle = async (looser) => {
     try {
-      console.log(primaryPokemon.currentHealth);
-      console.log(enemyPokemon.currentHealth);
+      console.log(user);
+      console.log("enter endofBattle");
+      await console.log(primaryPokemon.currentHealth);
+      await console.log(enemyPokemon.currentHealth);
       let coupons = user.coupons + 1;
       setUser((prev) => ({ ...prev, coupons }));
-      if (primaryPokemon.currentHealth == 0) {
+      if (looser == "my") {
         console.log("entered mydefeat");
         setBattleMessage(
           "You lost. Sorry! You get the following item: +1 Coupon for Pokecenter"
         );
       }
-      if (enemyPokemon.currentHealth == 0) {
+      if(looser == "enemy") {
         console.log("entered enemydefeat");
         let rewardString = "";
         if (!user.collectedCards.some((c) => c === enemyPokemon.orderNumber)) {
           let collectedCards = user.collectedCards;
           collectedCards.push(enemyPokemon.orderNumber);
-          setUser((prev) => ({ ...prev, collectedCards }));
-          enemyPokemon.ownerId = user.id;
-          enemyPokemon.currentHealth = enemyPokemon.health;
+          await setUser((prev) => ({ ...prev, collectedCards }));
+          const newPokemon = {
+            name : enemyPokemon.name,
+            orderNumber : enemyPokemon.orderNumber,
+            level : enemyPokemon.level,
+            attack : enemyPokemon.attack,
+            attackValue : enemyPokemon.attackValue,
+            defenseValue : enemyPokemon.defenseValue,
+            health : enemyPokemon.health,
+            currentHealth : enemyPokemon.health,
+            xp : 0,
+            type : enemyPokemon.type,
+            predecessor : enemyPokemon.predecessor,
+            successor : enemyPokemon.successor,
+            ownerId : user.id,
+            imgFront : enemyPokemon.imgFront,
+            imgBack : enemyPokemon.imgBack,
+            imgCard : enemyPokemon.imgCard
+          }
           const res = await axios.post(
             `http://localhost:8765/pokemon/`,
-            enemyPokemon
+            {...newPokemon}
           );
+          console.log(res);
           rewardString += "1x " + enemyPokemon.name + ",";
         }
         const randomChose = await Math.floor(Math.random() * 3);
@@ -157,28 +167,18 @@ function Battle() {
           }
         }
         let xp = user.xp + 100;
-        setUser((prev) => ({ ...prev, xp }));
+        await setUser((prev) => ({ ...prev, xp }));
         rewardString += " +100 XP";
 
         xp = primaryPokemon.xp + 50;
-        setPrimaryPokemon((prev) => ({ ...prev, xp }));
-        setBattleMessage(
+        await setPrimaryPokemon((prev) => ({ ...prev, xp }));
+        await setBattleMessage(
           "You WIN! You get the following rewards: " + rewardString.trim()
         );
       }
-      console.log(primaryPokemon);
-      const r = axios.put(
-        `http://localhost:8765/pokemon/${primaryPokemon.id}`,
-        {
-          primaryPokemon,
-        }
-      );
-      console.log(r);
-      console.log(user);
-      const re = axios.put(`http://localhost:8765/users/${user.id}`, {
-        user,
-      });
-      console.log(re);
+     
+      await savePokemon();
+      await saveUser();
       setTimeout(() => {
         navigate("/");
       }, 5000);

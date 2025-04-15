@@ -30,6 +30,23 @@ export const AuthProvider = ({ children }) => {
     navigate("/login");
   };
 
+  const saveUser = async () =>{
+    const re = await axios.put(`http://localhost:8765/users/${user.id}`, {
+      ...user
+    });
+    console.log(re);
+  }
+
+  const savePokemon = async () =>{
+    const r = await axios.put(
+      `http://localhost:8765/pokemon/${primaryPokemon.id}`,
+      {
+        ...primaryPokemon
+      }
+    );
+    console.log(r);
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -40,6 +57,8 @@ export const AuthProvider = ({ children }) => {
         primaryPokemon,
         setUser,
         setPrimaryPokemon,
+        saveUser,
+        savePokemon
       }}
     >
       {children}
