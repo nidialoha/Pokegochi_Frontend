@@ -41,7 +41,7 @@ function Login() {
 
   const fetchLogin = async () => {
     try {
-      const res = await fetch("#", {
+      const res = await fetch("http://localhost:8765/users/login", {
         method: "POST",
         body: JSON.stringify({
           email: loginData.email,

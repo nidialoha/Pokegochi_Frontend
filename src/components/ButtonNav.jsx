@@ -8,33 +8,37 @@ function ButtonNav() {
   return (
     <>
       <div className="fixed z-50 dock dock-xl container mx-auto grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 gap-3">
-        <button className="hover:bg-green-700 hover:text-white hover:w-full h-full align-middle gap-2">
-          <NavLink to="/" className="text-xs">
-            {" "}
-            <RiHomeHeartLine className="size-6 mb-2" />
-            Home
-          </NavLink>
-        </button>
-        <button className="hover:bg-red-700 hover:text-white hover:w-full h-full align-middle">
-          <NavLink to="/battle" className="text-xs">
-            {" "}
-            <LuSword className="size-6 mb-2" /> Battle
-          </NavLink>
-        </button>
-        <button className="hover:bg-yellow-400 hover:text-white hover:w-full h-full align-middle">
-          <NavLink to="/center" className="text-xs">
-            {" "}
-            <CgPokemon className="size-6 mb-2" />
-            Center
-          </NavLink>
-        </button>
-        <button className="hover:bg-blue-700 hover:text-white hover:w-full h-full align-middle">
-          <NavLink to="/dashboard" className="text-xs">
-            {" "}
-            <IoTrophyOutline className="size-6 mb-2" />
-            Dashboard
-          </NavLink>
-        </button>
+        <NavLink
+          className="hover:bg-green-700 hover:text-white hover:w-full h-full flex flex-col items-center justify-center text-xs"
+          to="/"
+        >
+          <RiHomeHeartLine className="size-6 mb-2" />
+          Home
+        </NavLink>
+        <NavLink
+          className="hover:bg-red-700 hover:text-white hover:w-full h-full flex flex-col items-center justify-center text-xs"
+          to="/battle"
+        >
+          <LuSword className="size-6 mb-2" /> Battle
+        </NavLink>
+
+        <NavLink
+          className="hover:bg-yellow-400 hover:text-white hover:w-full h-full flex flex-col items-center justify-center text-xs"
+          to="/center"
+        >
+          {" "}
+          <CgPokemon className="size-6 mb-2" />
+          Center
+        </NavLink>
+
+        <NavLink
+          className="hover:bg-blue-700 hover:text-white hover:w-full h-full flex flex-col items-center justify-center text-xs"
+          to="/dashboard"
+        >
+          {" "}
+          <IoTrophyOutline className="size-6 mb-2" />
+          Dashboard
+        </NavLink>
 
         {/* <button>
           <svg
