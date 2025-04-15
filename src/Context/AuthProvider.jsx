@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   const login = async () => {
     await setIsAuthenticated(true);
   };
-  //   console.log("🟢 isAuthenticated:", isAuthenticated); // <-- Debug
+  console.log("🟢 isAuthenticated:", isAuthenticated); // <-- Debug
 
   const logout = () => {
     setIsAuthenticated(false);

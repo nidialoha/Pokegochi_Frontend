@@ -1,16 +1,46 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { useAuth } from "../Context/AuthProvider";
+import { useAuth } from "../Context/AuthProvider";
 
 function Signup() {
-  //   const { setUser, login } = useAuth();
+  const { setUser, login } = useAuth();
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [signupData, setSignupData] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
+    primaryPokemon: "",
   });
+
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+
+  const starterPokemons = [
+    {
+      id: 1,
+      name: "Bulbasaur",
+      sprite:
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+    },
+    {
+      id: 4,
+      name: "Charmander",
+      sprite:
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+    },
+    {
+      id: 7,
+      name: "Squirtle",
+      sprite:
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+    },
+    {
+      id: 25,
+      name: "Pikachu",
+      sprite:
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+    },
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,36 +52,42 @@ function Signup() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const { username, email, password } = signupData;
+    const { name, email, password } = signupData;
 
-    if (!email.trim() || !password.trim()) {
+    if (!name.trim() || !email.trim() || !password.trim()) {
       setError("Please fill all the fields");
       return;
     }
 
     // ✅ Falls das Passwort zu kurz ist
     if (password.length < 6) {
-      setError("");
+      setError("Password must be at least 6 characters");
       return;
     }
     // ✅ Falls die E-Mail kein "@" enthält (Basic Check)
     if (!email.includes("@")) {
-      setError("");
+      setError("Invalid email address");
+      return;
+    }
+
+    if (!selectedPokemon) {
+      setError("Please choose your starter Pokemon");
       return;
     }
     setError("");
-
+    await fetchSignup();
     navigate("/login");
   };
 
   const fetchSignup = async () => {
     try {
-      const res = await fetch("#", {
+      const res = await fetch("http://localhost:8765/users/signup", {
         method: "POST",
         body: JSON.stringify({
-          username: `${signupData.username}`,
-          email: `${signupData.email}`,
-          password: `${signupData.password}`,
+          name: signupData.name,
+          email: signupData.email,
+          password: signupData.password,
+          primaryPokemon: signupData.primaryPokemon,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -60,9 +96,10 @@ function Signup() {
       if (!res.ok) throw Error("Bad request");
       const data = await res.json();
       console.log(data);
+      localStorage.setItem("token", data.token);
+
       setUser(data.user);
       await login();
-      navigate("/login");
     } catch (error) {
       console.log(error);
     }
@@ -76,11 +113,11 @@ function Signup() {
           <h1 className=" text-black font-black text-2xl">Signup!</h1>
           <div className="flex flex-col items-center justify-items-center gap-2">
             <input
-              type="username"
-              name="username"
-              placeholder="input your username"
+              type="text"
+              name="name"
+              placeholder="Input your name"
               className="input mb-3"
-              value={signupData.username}
+              value={signupData.name}
               onChange={handleChange}
             />
             <input
@@ -105,58 +142,48 @@ function Signup() {
               Choose your house pokemon:
             </h2>
           </div>
-          <div className="flex justify-center gap-7 mt-6">
-            <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2 hover:outline-4 outline-red-300">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
-              </div>
-            </div>
-
-            <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2 hover:outline-4 outline-red-300">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
-              </div>
-            </div>
-            <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2 hover:outline-4 outline-red-300">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
-              </div>
-            </div>
-            <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2 hover:outline-4 outline-red-300">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
-              </div>
+          <div>
+            <div className="flex justify-center gap-7 mt-3">
+              {starterPokemons.map((poke) => (
+                <div
+                  key={poke.id}
+                  className={`avatar cursor-pointer ${
+                    selectedPokemon === poke.id
+                      ? "outline-4 outline-red-500 rounded-full ring ring-offset-2"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    setSelectedPokemon(poke.id);
+                    setSignupData((prev) => ({
+                      ...prev,
+                      primaryPokemon: poke.id,
+                    }));
+                  }}
+                >
+                  <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
+                    <img
+                      className="bg-blue-400"
+                      src={poke.sprite}
+                      alt={poke.name}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
+          {error && (
+            <p className="text-red-600 font-semibold bg-white p-3 rounded-lg text-center">
+              {error}
+            </p>
+          )}
           <button
-            className="mt-6 bg-red-800 rounded-lg h-[35px] w-[100px] text-white hover:bg-red-900 text-center content-center"
+            className="mt-2 bg-red-800 rounded-lg h-[35px] w-[100px] text-white hover:bg-red-900 text-center content-center mb-6"
             type="submit"
-            onClick={fetchSignup}
           >
             Signup
           </button>
         </div>
       </form>
-      <div>
-        <p>Test</p>
-        <p>Test</p>
-        <p>Test</p>
-        <p>Test</p>
-        <p>Test</p>
-      </div>
-      <p>Test</p>
     </>
   );
 }
