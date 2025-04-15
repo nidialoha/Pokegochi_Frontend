@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthProvider";
+import axios from "axios";
 
 function Login() {
-  const { setUser, login } = useAuth();
+  const { setUser, login, setPrimaryPokemon } = useAuth();
 
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -53,8 +54,11 @@ function Login() {
       });
       if (!res.ok) throw Error("Bad request");
       const data = await res.json();
-      console.log(data);
-      //   localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.token);
+      const resPokemon = await axios.get(
+        `http://localhost:8765/pokemon/${data.user.primaryPokemon}`
+      );
+      setPrimaryPokemon(resPokemon.data);
       setUser(data.user);
       await login();
       navigate("/loading");
