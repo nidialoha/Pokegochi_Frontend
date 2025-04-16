@@ -2,24 +2,31 @@ import { useAuth } from "../Context/AuthProvider";
 import { FaHeart } from "react-icons/fa";
 import XPBar from "../components/XPBar";
 import HealthBar from "../components/HealthBar";
-import { useState } from "react";
-import UserAssets from "../components/UserAssets";
 
 function Center() {
-  const { primaryPokemon } = useAuth();
-  const [showAssets, setShowAssets] = useState(false);
+  const { user, setUser, primaryPokemon, setPrimaryPokemon } = useAuth();
+
+  const handleHeal = async () => {
+    let currentHealth = primaryPokemon.health;
+    await setPrimaryPokemon((prev) => ({
+      ...prev,
+      currentHealth,
+    }));
+    let coupons = user.coupons - 1;
+    await setUser((prev) => ({
+      ...prev,
+      coupons,
+    }));
+  };
+
   return (
     <>
       <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('/PokemonCenter.png')] bg-cover bg-center scale-105" />
+        <div className="absolute inset-0 bg-[url('/PokemonCenter.png')] bg-cover bg-center" />
       </div>
 
       <div className="relative z-10 flex justify-center">
-        <XPBar
-          currentXP={7000000}
-          maxXP={10000000}
-          icon="/Strom.svg" // dein eigenes Bild
-        />
+        <XPBar currentXP={user.xp} maxXP={10000} />
       </div>
 
       <div className="mb-1 animate-bounce-in flex flex-col items-center">
@@ -44,14 +51,19 @@ function Center() {
         <div className="fixed bottom-20 flex justify-between mb-8 mx-20 gap-4 z-40">
           {/* Fütterungs-Button */}
           <button
-            onClick={() => setShowAssets(true)}
+            disabled={
+              user.coupons == 0 ||
+              primaryPokemon.currentHealth == primaryPokemon.health
+                ? true
+                : false
+            }
+            onClick={() => handleHeal()}
             className="w-15 h-15 bg-white rounded-full shadow-md flex items-center justify-center cursor-pointer"
           >
             <FaHeart className="size-8" />
           </button>
         </div>
       </div>
-      {showAssets && <UserAssets onClose={() => setShowAssets(false)} />}
     </>
   );
 }

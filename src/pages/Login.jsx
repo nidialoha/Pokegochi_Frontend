@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthProvider";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 function Login() {
   const { setUser, login, setPrimaryPokemon } = useAuth();
@@ -27,15 +28,19 @@ function Login() {
 
     if (!email.trim() || !password.trim()) {
       setError("Please fill all the fields");
+      toast.error("Please fill all the fields.");
       return;
     }
 
     // ✅ Falls die E-Mail kein "@" enthält (Basic Check)
     if (!email.includes("@")) {
       setError("");
+      toast.error("Please use @.");
       return;
     }
+
     setError("");
+    toast.success("Now catch some Pokemon!");
     // await login();
     // navigate("/");
   };
@@ -68,6 +73,7 @@ function Login() {
   };
   return (
     <>
+      <Toaster />
       <form onSubmit={handleLogin}>
         <div className="bg-[url(/PokemonRoom.png)] bg-fixed h-full w-full sm:absolute object-cover md:absolute object-left blur-md fixed inset-0 z-0"></div>
 
@@ -93,12 +99,19 @@ function Login() {
           </div>
 
           <button
-            className="mt-6 bg-red-800 rounded-lg h-[35px] w-[100px] text-white hover:bg-red-900 text-center content-center"
+            className="mt-6 bg-red-800 rounded-lg h-[35px] w-[100px] text-white hover:bg-red-900 text-center content-center cursor-pointer"
             type="submit"
             onClick={fetchLogin}
           >
             Login
           </button>
+          <p className="text-white mb-6">
+            You don't have an account? here{" "}
+            <NavLink className="underline hover:text-pink-700" to="/signup">
+              {" "}
+              signup!
+            </NavLink>{" "}
+          </p>
         </div>
       </form>
     </>
