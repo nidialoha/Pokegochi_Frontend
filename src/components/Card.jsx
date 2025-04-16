@@ -1,4 +1,6 @@
-function Card() {
+function Card(pokemon) {
+  console.log("fired Card");
+  console.log(pokemon);
   return (
     <>
       <div
@@ -9,15 +11,15 @@ function Card() {
         <div className="flex justify-between items-center">
           <div className="absolute w-10 h-10 rounded-full overflow-hidden border border-black bg-white">
             <img
-              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg"
+              src={pokemon.pokemon.imgFront}
               alt="Mini"
               className="w-full h-full object-cover"
             />
           </div>
-          <h2 className="text-md font-bold ml-12 mt-2">Pikachu</h2>
+          <h2 className="text-md font-bold ml-12 mt-2">{pokemon.pokemon.name}</h2>
           <span className="flex text-md font-semibold mt-2 mr-2 items-center">
             <p className="text-xs">HP </p>
-            <p className="text-lg">60</p>
+            <p className="text-lg">{pokemon.pokemon.health}</p>
           </span>
         </div>
 
@@ -26,7 +28,7 @@ function Card() {
           <div className="relative bg-yellow-200 w-full h-30 rounded-xl mt-3 overflow-hidden border border-black">
             {/* Pokémon Bild */}
             <img
-              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/25.png"
+              src={pokemon.pokemon.imgCard}
               alt="Pokemon"
               className="w-full h-full object-cover"
             />
@@ -34,7 +36,7 @@ function Card() {
           <div>
             <h3>
               <span className="font-bold text-[8px] flex justify-center rounded-lg mt-1 bg-slate-200 text-black">
-                #025 • Mouse Pokemon • 0,4 m • 6,0 kg
+                #{pokemon.pokemon.orderNumber} • Mouse Pokemon • 0,4 m • 6,0 kg
               </span>
             </h3>
           </div>
@@ -55,7 +57,7 @@ function Card() {
             </div>
 
             {/* <p className="font-bold">Typ:</p> */}
-            <p className="font-black text-sm">⚡ Electric</p>
+            <p className="font-black text-sm">{pokemon.pokemon.type}</p>
           </div>
 
           {/* <span className="font-bold">Attack:</span>  */}
@@ -67,8 +69,8 @@ function Card() {
                 className="w-full h-full object-cover"
               />
             </div>
-            <p className="font-black text-sm">Thunder Shock</p>
-            <p className="font-black text-sm"> 40</p>
+            <p className="font-black text-sm">{pokemon.pokemon.attack}</p>
+            <p className="font-black text-sm"> {pokemon.pokemon.attackValue}</p>
           </div>
         </div>
 

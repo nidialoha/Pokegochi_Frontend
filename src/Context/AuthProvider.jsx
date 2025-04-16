@@ -31,20 +31,26 @@ export const AuthProvider = ({ children }) => {
   };
 
   const saveUser = async () =>{
-    const re = await axios.put(`http://localhost:8765/users/${user.id}`, {
-      ...user
-    });
-    console.log(re);
+    if(user){
+      const re = await axios.put(`http://localhost:8765/users/${user.id}`, {
+        ...user
+      });
+      console.log(re);
+    }
+    
   }
 
   const savePokemon = async () =>{
-    const r = await axios.put(
-      `http://localhost:8765/pokemon/${primaryPokemon.id}`,
-      {
-        ...primaryPokemon
-      }
-    );
-    console.log(r);
+    if(primaryPokemon){
+      const r = await axios.put(
+        `http://localhost:8765/pokemon/${primaryPokemon.id}`,
+        {
+          ...primaryPokemon
+        }
+      );
+      console.log(r);
+    }
+    
   }
 
   useEffect(()=>{savePokemon();}, [primaryPokemon])

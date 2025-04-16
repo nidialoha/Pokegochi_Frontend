@@ -54,7 +54,33 @@ function Battle() {
     fetchEnemy();
   }, []);
 
-  const counterAttack = async () => {};
+  const counterAttack = async () => {
+    let myDefenseValue = primaryPokemon.defenseValue * Math.random();
+    let myDamage = Math.floor(enemyPokemon.attackValue - myDefenseValue);
+    if (myDamage <= 0) {
+      myDamage = 1;
+    }
+    setMyPokemonIsHit(true);
+    setTimeout(() => setMyPokemonIsHit(false), 500);
+    await setBattleMessage(
+      enemyPokemon.name +
+        " attacks with " +
+        enemyPokemon.attack +
+        " and causes " +
+        myDamage +
+        " damage."
+    );
+    let currentHealth = primaryPokemon.currentHealth - myDamage;
+    if (currentHealth < 0) currentHealth = 0;
+    await setPrimaryPokemon((prev) => ({
+      ...prev,
+      currentHealth,
+    }));
+    if (currentHealth == 0) {
+      await handleEndOfBattle("my");
+      return;
+    }
+  };
 
   const performAttack = async () => {
     let defenseValue = enemyPokemon.defenseValue * Math.random();
@@ -82,33 +108,7 @@ function Battle() {
     }
 
     setTimeout(() => {
-      let myDefenseValue = primaryPokemon.defenseValue * Math.random();
-      let myDamage = Math.floor(enemyPokemon.attackValue - myDefenseValue);
-      if (myDamage <= 0) {
-        myDamage = 1;
-      }
-      setMyPokemonIsHit(true);
-      setTimeout(() => setMyPokemonIsHit(false), 500);
-      setBattleMessage(
-        enemyPokemon.name +
-          " attacks with " +
-          enemyPokemon.attack +
-          " and causes " +
-          myDamage +
-          " damage."
-      );
-      currentHealth = primaryPokemon.currentHealth - myDamage;
-      if (currentHealth < 0) currentHealth = 0;
-      setPrimaryPokemon((prev) => ({
-        ...prev,
-        currentHealth,
-      }));
-      if (currentHealth == 0) {
-        handleEndOfBattle("my");
-        return;
-      }
-
-      setBattleMessage("");
+      counterAttack();
     }, 2000);
   };
 

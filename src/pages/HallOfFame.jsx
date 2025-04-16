@@ -1,46 +1,53 @@
 import { useState, useEffect } from "react";
 import { CgPlayButton } from "react-icons/cg";
 import { NavLink } from "react-router-dom";
+import axios from "axios";
 
-const mockData = [
-  {
-    name: "de_nidi",
-    xp: 7000000,
-    avatar:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
-  },
-  {
-    name: "aliens_25",
-    xp: 4543234,
-    avatar:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-  },
-  {
-    name: "pokemaster",
-    xp: 345038,
-    avatar:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png",
-  },
-  {
-    name: "marioJr",
-    xp: 283321,
-    avatar:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/90.png",
-  },
-  {
-    name: "johnnyjohn",
-    xp: 400,
-    avatar:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-  },
-];
+// const mockData = [
+//   {
+//     name: "de_nidi",
+//     xp: 7000000,
+//     avatar:
+//       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+//   },
+//   {
+//     name: "aliens_25",
+//     xp: 4543234,
+//     avatar:
+//       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+//   },
+//   {
+//     name: "pokemaster",
+//     xp: 345038,
+//     avatar:
+//       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png",
+//   },
+//   {
+//     name: "marioJr",
+//     xp: 283321,
+//     avatar:
+//       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/90.png",
+//   },
+//   {
+//     name: "johnnyjohn",
+//     xp: 400,
+//     avatar:
+//       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+//   },
+// ];
 
 const HallOfFamePage = () => {
-  const [players, setPlayers] = useState([]);
-
+  const [players, setPlayers] = useState([]);  
   useEffect(() => {
-    // Hier später API call machen z.B. /api/leaderboard
-    setPlayers(mockData);
+    const fetchUsers = async () => {
+      try {
+        const {data: response} = await axios.get('http://localhost:8765/users');
+        setPlayers(response);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+    fetchUsers();
   }, []);
 
   return (
@@ -65,11 +72,7 @@ const HallOfFamePage = () => {
                 <span className="text-xl font-bold w-6 text-black">
                   {index + 1}.
                 </span>
-                <img
-                  src={player.avatar}
-                  alt={player.name}
-                  className="w-8 h-8 rounded-full"
-                />
+                
                 <span className="font-semibold text-black">{player.name}</span>
               </div>
               <div className="flex items-center gap-1 font-mono font-bold text-black">

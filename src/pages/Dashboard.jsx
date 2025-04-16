@@ -1,8 +1,36 @@
 import { NavLink } from "react-router-dom";
 import Card from "../components/Card";
 import { IoIosSettings } from "react-icons/io";
+import { useAuth } from "../Context/AuthProvider";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Dashboard() {
+  const {user} = useAuth();
+  const [pokemonCards, setPokemonCards] = useState([]);
+  
+  useEffect(()=>{
+    const fetchCardPokemon = async ()=>{
+      try {
+        if(pokemonCards.length==0){
+          await user.collectedCards.forEach(async (e)=>{
+            const res = await axios.get(`http://localhost:8765/pokemon/${e}`);
+            
+            setPokemonCards((prev) => ([...prev, res.data]));
+           });
+           //setPokemonCards(cardArray);
+          console.log(pokemonCards);
+        }
+         
+         
+      } catch (error) {
+        console.log(error);
+      }
+      
+    }
+    fetchCardPokemon();
+
+  }, [])
   return (
     <>
       <div className="fixed inset-0 z-0">
@@ -12,7 +40,7 @@ function Dashboard() {
       <div className="relative z-10 flex flex-col items-center justify-items-center min-h-screen gap-6 mt-5">
         <div className="relative w-full flex justify-center items-center mt-4">
           <h1 className=" text-black font-black text-3xl text-center w-[300px] text-wrap">
-            Welcome back, "Username"!
+            Welcome back, "{user.name}"!
           </h1>
           <NavLink>
             <IoIosSettings className="size-8 text-black absolute right-8" />
@@ -34,12 +62,9 @@ function Dashboard() {
               Card Collection
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6 mt-4">
-              <Card />
-              <Card />
-              <Card />
-              <Card />
-              <Card />
-              <Card />
+              {pokemonCards.map((p, i)=>(<Card key={p.orderNumber} pokemon={p} />)                
+              )}
+              
             </div>
             {/* {pokemonList.map((pokemon) => (
               <Card key={pokemon.id} data={pokemon} />
