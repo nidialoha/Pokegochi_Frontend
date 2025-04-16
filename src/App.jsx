@@ -11,21 +11,21 @@ import Loading from "./components/Loading";
 import NotFound from "./pages/NotFound";
 import Card from "./components/Card";
 import HallOfFame from "./pages/HallOfFame";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
-        <Route index element={<Home />} />
+        <Route index element={<ProtectedRoute><Home /></ProtectedRoute>} />
 
         <Route path="signup" element={<Signup />} />
         <Route path="login" element={<Login />} />
-        <Route path="battle" element={<Battle />} />
-        <Route path="center" element={<Center />} />
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="battle" element={<ProtectedRoute><Battle /></ProtectedRoute>} />
+        <Route path="center" element={<ProtectedRoute><Center /></ProtectedRoute>} />
+        <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="loading" element={<Loading />} />
-        <Route path="card" element={<Card />} />
-        <Route path="hall-of-fame" element={<HallOfFame />} />
+        <Route path="card" element={<ProtectedRoute><Card /></ProtectedRoute>} />
+        <Route path="hall-of-fame" element={<ProtectedRoute><HallOfFame /></ProtectedRoute>} />
 
         <Route path="*" element={<NotFound />} />
       </Route>

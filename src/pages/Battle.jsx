@@ -170,15 +170,13 @@ function Battle() {
         await setUser((prev) => ({ ...prev, xp }));
         rewardString += " +100 XP";
 
-        xp = primaryPokemon.xp + 50;
-        await setPrimaryPokemon((prev) => ({ ...prev, xp }));
+        let pokexp = primaryPokemon.xp + 50;
+        await setPrimaryPokemon((prev) => ({ ...prev, xp: pokexp }));
         await setBattleMessage(
           "You WIN! You get the following rewards: " + rewardString.trim()
         );
       }
-     
-      await savePokemon();
-      await saveUser();
+
       setTimeout(() => {
         navigate("/");
       }, 5000);

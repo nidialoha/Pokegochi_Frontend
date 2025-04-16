@@ -47,6 +47,9 @@ export const AuthProvider = ({ children }) => {
     console.log(r);
   }
 
+  useEffect(()=>{savePokemon();}, [primaryPokemon])
+  useEffect(()=>{saveUser();}, [user])
+
   return (
     <AuthContext.Provider
       value={{
