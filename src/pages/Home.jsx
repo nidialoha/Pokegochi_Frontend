@@ -8,7 +8,7 @@ import { GiForkKnifeSpoon } from "react-icons/gi";
 import { useAuth } from "../Context/AuthProvider";
 
 function Home() {
-  const { primaryPokemon } = useAuth();
+  const { user, setUser, primaryPokemon, setPrimaryPokemon } = useAuth();
 
   const [showFeedMenu, setShowFeedMenu] = useState(false);
   const [showSwitchMenu, setShowSwitchMenu] = useState(false);
@@ -20,11 +20,7 @@ function Home() {
       </div>
 
       <div className="relative z-10 flex justify-center">
-        <XPBar
-          currentXP={7000000}
-          maxXP={10000000}
-          icon="/Strom.svg" // dein eigenes Bild
-        />
+        <XPBar currentXP={user.xp} maxXP={10000} />
       </div>
 
       <div className="mb-1 animate-bounce-in flex flex-col items-center">

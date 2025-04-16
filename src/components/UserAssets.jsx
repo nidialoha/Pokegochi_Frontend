@@ -13,14 +13,14 @@ const UserAssets = ({ onClose }) => {
     {
       label: "BonBons",
       key: "bonbons",
-      health: 30,
+      level: +1,
       xpCost: 0,
       image: "/HeartLife.svg",
     },
     {
       label: "Coupons",
       key: "coupons",
-      health: 100,
+      currentHealth: +20,
       xpCost: 0,
       image: "/Strom.svg",
     },

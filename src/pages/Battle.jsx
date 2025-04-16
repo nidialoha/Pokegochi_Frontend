@@ -7,9 +7,18 @@ import { useNavigate } from "react-router-dom";
 
 function Battle() {
   const [loading, setLoading] = useState(true);
+  const [enemyIsHit, setEnemyIsHit] = useState(false);
+  const [myPokemonIsHit, setMyPokemonIsHit] = useState(false);
   const [cancelled, setCancelled] = useState(false);
   const [enemyPokemon, setEnemyPokemon] = useState({});
-  const { primaryPokemon, user, setUser, setPrimaryPokemon, saveUser, savePokemon } = useAuth();
+  const {
+    primaryPokemon,
+    user,
+    setUser,
+    setPrimaryPokemon,
+    saveUser,
+    savePokemon,
+  } = useAuth();
   const [battleMessage, setBattleMessage] = useState("");
   const handleCancel = () => setCancelled(true);
   const handleFinish = () => setLoading(false);
@@ -45,11 +54,14 @@ function Battle() {
     fetchEnemy();
   }, []);
 
-  const counterAttack = async () => {let myDefenseValue = primaryPokemon.defenseValue * Math.random();
+  const counterAttack = async () => {
+    let myDefenseValue = primaryPokemon.defenseValue * Math.random();
     let myDamage = Math.floor(enemyPokemon.attackValue - myDefenseValue);
     if (myDamage <= 0) {
       myDamage = 1;
     }
+    setMyPokemonIsHit(true);
+    setTimeout(() => setMyPokemonIsHit(false), 500);
     await setBattleMessage(
       enemyPokemon.name +
         " attacks with " +
@@ -81,8 +93,11 @@ function Battle() {
         damage +
         " damage."
     );
+
     let currentHealth = Math.floor(enemyPokemon.currentHealth - damage);
     if (currentHealth < 0) currentHealth = 0;
+    setEnemyIsHit(true);
+    setTimeout(() => setEnemyIsHit(false), 500);
     await setEnemyPokemon((prev) => ({
       ...prev,
       currentHealth,
@@ -111,7 +126,7 @@ function Battle() {
           "You lost. Sorry! You get the following item: +1 Coupon for Pokecenter"
         );
       }
-      if(looser == "enemy") {
+      if (looser == "enemy") {
         console.log("entered enemydefeat");
         let rewardString = "";
         if (!user.collectedCards.some((c) => c === enemyPokemon.orderNumber)) {
@@ -119,27 +134,26 @@ function Battle() {
           collectedCards.push(enemyPokemon.orderNumber);
           await setUser((prev) => ({ ...prev, collectedCards }));
           const newPokemon = {
-            name : enemyPokemon.name,
-            orderNumber : enemyPokemon.orderNumber,
-            level : enemyPokemon.level,
-            attack : enemyPokemon.attack,
-            attackValue : enemyPokemon.attackValue,
-            defenseValue : enemyPokemon.defenseValue,
-            health : enemyPokemon.health,
-            currentHealth : enemyPokemon.health,
-            xp : 0,
-            type : enemyPokemon.type,
-            predecessor : enemyPokemon.predecessor,
-            successor : enemyPokemon.successor,
-            ownerId : user.id,
-            imgFront : enemyPokemon.imgFront,
-            imgBack : enemyPokemon.imgBack,
-            imgCard : enemyPokemon.imgCard
-          }
-          const res = await axios.post(
-            `http://localhost:8765/pokemon/`,
-            {...newPokemon}
-          );
+            name: enemyPokemon.name,
+            orderNumber: enemyPokemon.orderNumber,
+            level: enemyPokemon.level,
+            attack: enemyPokemon.attack,
+            attackValue: enemyPokemon.attackValue,
+            defenseValue: enemyPokemon.defenseValue,
+            health: enemyPokemon.health,
+            currentHealth: enemyPokemon.health,
+            xp: 0,
+            type: enemyPokemon.type,
+            predecessor: enemyPokemon.predecessor,
+            successor: enemyPokemon.successor,
+            ownerId: user.id,
+            imgFront: enemyPokemon.imgFront,
+            imgBack: enemyPokemon.imgBack,
+            imgCard: enemyPokemon.imgCard,
+          };
+          const res = await axios.post(`http://localhost:8765/pokemon/`, {
+            ...newPokemon,
+          });
           console.log(res);
           rewardString += "1x " + enemyPokemon.name + ",";
         }
@@ -177,8 +191,8 @@ function Battle() {
       }
 
       setTimeout(() => {
-        navigate("/");
-      }, 5000);
+        navigate("/center");
+      }, 4000);
     } catch (error) {
       console.log(error);
     }
@@ -201,10 +215,16 @@ function Battle() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/BattleArena.png')" }}
         />
-
+        <div>
+          {battleMessage && (
+            <span className=" bg-black/60 text-white p-4 text-center shadow-lg rounded-lg text-lg animate-fade-in absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 mt-3 flex items-center justify-center ">
+              {battleMessage}
+            </span>
+          )}
+        </div>
         {/* Main Arena UI – wird erst sichtbar, wenn loading = false */}
         {!loading && (
-          <div className="relative z-10 flex flex-col items-center justify-between h-auto mt-[15%] w-full">
+          <div className="relative z-10 flex flex-col items-center justify-between h-auto mt-[12%] w-full">
             {/* Gegner (kommt später per API, daher nur Dummy jetzt) */}
 
             <div
@@ -212,38 +232,51 @@ function Battle() {
               className="flex flex-row justify-between w-max gap-[10%]"
             >
               <div className="mb-1 animate-bounce-in flex flex-col items-center">
-                <div className="">
+                <div className="w-40 flex items-end z-20 gap-2 static">
                   {/* HealthBar über dem Pokémon */}
-                  <div className="mt-4 w-40 flex z-20">
-                    <HealthBar
-                      currentHealth={enemyPokemon.currentHealth}
-                      maxHealth={enemyPokemon.health}
-                    />
-                    <span>Lvl. {enemyPokemon.level}</span>
-                  </div>
+
+                  <HealthBar
+                    currentHealth={enemyPokemon.currentHealth}
+                    maxHealth={enemyPokemon.health}
+                  />
+                  <span className="text-sm font-semibold text-center text-white bg-red-500 h-14 w-20 px-3 py-1 rounded-full flex items-center justify-center ">
+                    Lvl. {enemyPokemon.level}
+                  </span>
                 </div>
                 <img
                   src={enemyPokemon.imgFront}
                   alt="Gegner"
-                  className="w-96 h-auto"
+                  className={`w-96 h-auto ${
+                    enemyIsHit ? "animate-spin" : "animate-bounce"
+                  } ${
+                    enemyPokemon.currentHealth === 0
+                      ? "opacity-0"
+                      : "opacity-100"
+                  }`}
                 />
               </div>
 
-              <div>
-                <span>{battleMessage}</span>
-              </div>
               <div className="mb-1 animate-bounce-in flex flex-col items-center">
-                <div className="mt-4 w-40 flex justify-center z-20">
+                <div className="w-40 flex justify-center items-end z-20 gap-2 static">
                   <HealthBar
                     currentHealth={primaryPokemon.currentHealth}
                     maxHealth={primaryPokemon.health}
                   />
-                  <span>Lvl. {primaryPokemon.level}</span>
+                  <span className="text-sm font-semibold text-center text-white bg-red-500 h-14 w-20 px-3 py-1 rounded-full flex items-center justify-center">
+                    Lvl. {primaryPokemon.level}
+                  </span>
                 </div>
                 <img
                   src={primaryPokemon.imgFront}
                   alt="MyPokemon"
-                  className="w-96 h-auto"
+                  className={`w-96 h-auto ${
+                    myPokemonIsHit ? "animate-spin" : "animate-bounce"
+                  }
+                  ${
+                    primaryPokemon.currentHealth === 0
+                      ? "opacity-0"
+                      : "opacity-100"
+                  }`}
                 />
               </div>
             </div>
@@ -252,14 +285,14 @@ function Battle() {
             <div className="flex gap-4">
               <button
                 onClick={performAttack}
-                className="bg-red-600 text-white px-6 py-3 rounded  hover:bg-red-800"
+                className="bg-red-600 text-white px-6 py-3 rounded  hover:bg-red-800 cursor-pointer"
               >
                 Attack
               </button>
-              <button className="bg-yellow-400 text-white px-6 py-3 rounded hover:bg-yellow-600">
+              <button className="bg-yellow-400 text-white px-6 py-3 rounded hover:bg-yellow-600 cursor-pointer">
                 Defense
               </button>
-              <button className="bg-gray-600 text-white px-6 py-3 rounded hover:bg-gray-900">
+              <button className="bg-gray-600 text-white px-6 py-3 rounded hover:bg-gray-900 cursor-pointer">
                 Special
               </button>
             </div>

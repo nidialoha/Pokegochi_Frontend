@@ -6,31 +6,27 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function Dashboard() {
-  const {user} = useAuth();
+  const { user, primaryPokemon } = useAuth();
   const [pokemonCards, setPokemonCards] = useState([]);
-  
-  useEffect(()=>{
-    const fetchCardPokemon = async ()=>{
+
+  useEffect(() => {
+    const fetchCardPokemon = async () => {
       try {
-        if(pokemonCards.length==0){
-          await user.collectedCards.forEach(async (e)=>{
+        if (pokemonCards.length == 0) {
+          await user.collectedCards.forEach(async (e) => {
             const res = await axios.get(`http://localhost:8765/pokemon/${e}`);
-            
-            setPokemonCards((prev) => ([...prev, res.data]));
-           });
-           //setPokemonCards(cardArray);
+
+            setPokemonCards((prev) => [...prev, res.data]);
+          });
+          //setPokemonCards(cardArray);
           console.log(pokemonCards);
         }
-         
-         
       } catch (error) {
         console.log(error);
       }
-      
-    }
+    };
     fetchCardPokemon();
-
-  }, [])
+  }, []);
   return (
     <>
       <div className="fixed inset-0 z-0">
@@ -48,10 +44,7 @@ function Dashboard() {
         </div>
         <div className="avatar">
           <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
-            <img
-              className="bg-blue-400"
-              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-            />
+            <img className="bg-slate-400" src={primaryPokemon.imgFront} />
           </div>
         </div>
         {/* Platz für XP Bar & Healthbar */}
@@ -62,9 +55,9 @@ function Dashboard() {
               Card Collection
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6 mt-4">
-              {pokemonCards.map((p, i)=>(<Card key={p.orderNumber} pokemon={p} />)                
-              )}
-              
+              {pokemonCards.map((p, i) => (
+                <Card key={p.orderNumber} pokemon={p} />
+              ))}
             </div>
             {/* {pokemonList.map((pokemon) => (
               <Card key={pokemon.id} data={pokemon} />
@@ -76,10 +69,7 @@ function Dashboard() {
           <div>
             <div className="avatar">
               <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
+                <img className="bg-blue-400" src="/bx_medal.svg" />
               </div>
             </div>
           </div>
@@ -88,8 +78,8 @@ function Dashboard() {
             <div className="avatar">
               <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
                 <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
+                  className="bg-yellow-400"
+                  src="/noto_3rd-place-medal.svg"
                 />
               </div>
             </div>
@@ -97,88 +87,8 @@ function Dashboard() {
 
           <div>
             <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="avatar">
-              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2">
-                <img
-                  className="bg-blue-400"
-                  src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-                />
+              <div className="ring-primary ring-offset-base-100 w-24 rounded-full ring ring-offset-2 bg-slate-400 ">
+                <img className="" src="/bx_medal.svg" />
               </div>
             </div>
           </div>

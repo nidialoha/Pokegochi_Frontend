@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthProvider";
+import toast, { Toaster } from "react-hot-toast";
 
 function Signup() {
   const { setUser, login } = useAuth();
@@ -55,26 +56,31 @@ function Signup() {
     const { name, email, password } = signupData;
 
     if (!name.trim() || !email.trim() || !password.trim()) {
-      setError("Please fill all the fields");
+      // setError("Please fill all the fields");
+      toast.error("Please fill all the fields.");
       return;
     }
 
     // ✅ Falls das Passwort zu kurz ist
     if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+      // setError("Password must be at least 6 characters");
+      toast.error("Password must be at least 6 characters");
       return;
     }
     // ✅ Falls die E-Mail kein "@" enthält (Basic Check)
     if (!email.includes("@")) {
-      setError("Invalid email address");
+      // setError("Invalid email address");
+      toast.error("Invalid email address");
       return;
     }
 
     if (!selectedPokemon) {
-      setError("Please choose your starter Pokemon");
+      // setError("Please choose your starter Pokemon");
+      toast.error("Please choose your starter Pokemon");
       return;
     }
     setError("");
+    toast.success("User successfully created! Please log in again!");
     await fetchSignup();
     navigate("/login");
   };
@@ -106,6 +112,7 @@ function Signup() {
   };
   return (
     <>
+      <Toaster />
       <form onSubmit={handleSignup}>
         <div className="bg-[url(/PokemonRoom.png)] bg-fixed h-full w-full sm:absolute object-cover md:absolute object-left blur-md fixed inset-0 z-0"></div>
 
@@ -177,11 +184,18 @@ function Signup() {
             </p>
           )}
           <button
-            className="mt-2 bg-red-800 rounded-lg h-[35px] w-[100px] text-white hover:bg-red-900 text-center content-center mb-6"
+            className="mt-2 bg-red-800 rounded-lg h-[35px] w-[100px] text-white hover:bg-red-900 text-center content-center"
             type="submit"
           >
             Signup
           </button>
+          <p className=" mb-6 text-white">
+            You have an account already? here{" "}
+            <NavLink className=" underline hover:text-pink-500" to="/login">
+              {" "}
+              login!
+            </NavLink>{" "}
+          </p>
         </div>
       </form>
     </>
