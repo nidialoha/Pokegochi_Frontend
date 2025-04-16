@@ -12,14 +12,19 @@ import NotFound from "./pages/NotFound";
 import Card from "./components/Card";
 import HallOfFame from "./pages/HallOfFame";
 import ProtectedRoute from "./components/ProtectedRoute";
+import LoginLayout from "./layout/LoginLayout";
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<LoginLayout />}>
+        <Route path="signup" element={<Signup />} />
+        <Route path="login" element={<Login />} />
+      </Route>
+
       <Route path="/" element={<MainLayout />}>
         <Route index element={<ProtectedRoute><Home /></ProtectedRoute>} />
 
-        <Route path="signup" element={<Signup />} />
-        <Route path="login" element={<Login />} />
+        
         <Route path="battle" element={<ProtectedRoute><Battle /></ProtectedRoute>} />
         <Route path="center" element={<ProtectedRoute><Center /></ProtectedRoute>} />
         <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
